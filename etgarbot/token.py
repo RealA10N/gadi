@@ -1,5 +1,7 @@
 import logging
 
+logger = logging.getLogger(__name__)
+
 
 VALID_TOKEN_FILE_NAMES = (
     "token", "token.txt",
@@ -18,7 +20,7 @@ def get_token():
         try:
             with open(filename, 'r') as file:
                 token = file.read().strip()
-                logging.info(
+                logger.info(
                     "Loaded discord bot token from the '%s' file", filename)
                 return token
 
@@ -28,6 +30,6 @@ def get_token():
             continue
 
     # If could not find a file for the token, returns None.
-    logging.error(
+    logger.error(
         "A file with a discord token (e.g. 'token.txt') wasn't located.")
     return None
