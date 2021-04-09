@@ -1,6 +1,7 @@
 import typing
 from abc import ABC
 import discord
+import string
 
 # - - - Typing hints - - - #
 MessageScore = typing.Union[float, int, ]
@@ -31,3 +32,22 @@ class BaseMessageHandler(ABC):
         """ Returns a long description that describes the current message
         handler. This is used and displayed, for example, when using the 'help'
         command. """
+
+
+class MessageHandlerUtils:
+    """ A collection of static methods that are used in different message
+    handlers in the bot. """
+
+    VALID_PREFIXES = (
+        "גדי",
+        "gadi",
+    )
+
+    @classmethod
+    def with_prefix(cls, message: str) -> bool:
+        """ Recives the message as a string, and returns `True` if the message
+        starts with the bot prefix. """
+
+        return any(message.lower().startswith(prefix.lower() + whitespace)
+                   for prefix in cls.VALID_PREFIXES
+                   for whitespace in string.whitespace)
