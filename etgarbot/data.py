@@ -3,6 +3,7 @@ import logging
 import json
 import asyncio
 import atexit
+import os
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
@@ -28,6 +29,7 @@ class DynamicData:
                  hold_for: int = 15 * 60,
                  check_every: int = 60,
                  save_atexit: bool = True,
+                 default_data: typing.Union[dict, list] = None,
                  ):
         """ Creates a dynamic data instance. When calling the constructor,
         the file is not actually read.
@@ -38,9 +40,16 @@ class DynamicData:
         for last updated time. `check_every` is the amount of seconds between
         checks, and it's set to 1 minute by default. """
 
+        if (  # Checks if default_data is valid
+            not default_data is None
+            and not isinstance(default_data, (list, dict))
+        ):
+            raise TypeError("Default data should be a dict or a list")
+
         self._filepath = filepath
         self._hold_for = hold_for
         self._check_every = check_every
+        self._default_data = default_data
 
         self._data: JsonSuppored = DataNotLoaded()
         self._last_accessed: UnixTimestamp = None
@@ -69,10 +78,31 @@ class DynamicData:
         """ When called, loads the file from the storage (overwrites already
         loaded data if needed). """
 
-        with open(self._filepath) as file:
-            self._data = json.load(file,)
+        if os.path.isfile(self._filepath):
+            with open(self._filepath) as file:
+                self._data = json.load(file,)
 
-        logger.debug("Loaded dynamic data: %s", self._filepath)
+            logger.debug("Loaded dynamic data: %s", self._filepath)
+
+        else:   # If file doesn't exist
+            logger.warning(
+                "File not found while loading dynamic data: %s",
+                self._filepath
+            )
+
+            self.load_default_data()
+
+    def load_default_data(self,) -> None:
+        """ Loads the default data provided to the constructor as the dynamic
+        data of this instance. """
+
+        if self._default_data is None:
+            raise ValueError("Dynamic default data is not provided")
+
+        self._data = self._default_data
+
+        logger.warning(
+            "Loaded default data to dynamic data instance: %s", self._filepath)
 
     def throw_data(self,) -> None:
         """ When called, deletes the data file from the memory, and saves it
