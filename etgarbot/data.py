@@ -2,6 +2,7 @@ import typing
 import logging
 import json
 import asyncio
+import atexit
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
@@ -26,6 +27,7 @@ class DynamicData:
                  filepath: str,
                  hold_for: int = 15 * 60,
                  check_every: int = 60,
+                 save_atexit: bool = True,
                  ):
         """ Creates a dynamic data instance. When calling the constructor,
         the file is not actually read.
@@ -42,6 +44,9 @@ class DynamicData:
 
         self._data: JsonSuppored = DataNotLoaded()
         self._last_accessed: UnixTimestamp = None
+
+        if save_atexit:
+            atexit.register(self.throw_data)
 
     def data(self,) -> JsonSuppored:
         """ Returns the data that is saved in the file.
@@ -70,6 +75,9 @@ class DynamicData:
     def throw_data(self,) -> None:
         """ When called, deletes the data file from the memory, and saves it
         into the storage. """
+
+        if isinstance(self._data, DataNotLoaded):
+            return  # if data is already not loaded, does nothing silently.
 
         with open(self._filepath, 'w') as file:
             json.dump(self._data, file)
