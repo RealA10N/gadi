@@ -1,1 +1,1 @@
-from .bot import EtgarBot
+from .discord import EtgarBot
