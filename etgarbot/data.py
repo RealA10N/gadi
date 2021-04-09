@@ -72,6 +72,8 @@ class DynamicData:
         with open(self._filepath) as file:
             self._data = json.load(file,)
 
+        logger.debug("Loaded dynamic data: %s", self._filepath)
+
     def throw_data(self,) -> None:
         """ When called, deletes the data file from the memory, and saves it
         into the storage. """
@@ -83,6 +85,8 @@ class DynamicData:
             json.dump(self._data, file)
 
         self._data = DataNotLoaded()
+
+        logger.debug("Saved dynamic data: %s", self._filepath)
 
     async def _update_check_loop(self,):
         """ A loop that runs while the file is loaded. Sleeps must of the time,
