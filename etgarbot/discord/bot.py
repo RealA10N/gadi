@@ -23,6 +23,9 @@ class EtgarBot(discord.Client):
         """ Called by the `discord` module when a message websocket is
         received. """
 
+        if message.author == self.user:
+            return  # If message sent by the bot itself, exits the function.
+
         handler: BaseMessageHandler = max(
             self.MessageHandlers,
             key=lambda handler: handler.message_to_score(message)
