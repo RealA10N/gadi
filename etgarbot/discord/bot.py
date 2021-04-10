@@ -28,5 +28,13 @@ class EtgarBot(discord.Client):
             key=lambda handler: handler.message_to_score(message)
         )
 
-        if handler.message_to_score(message) >= self.ScoreThreshold:
+        score = handler.message_to_score(message)
+        if score >= self.ScoreThreshold:
             await handler.message_handle(message)
+
+            logger.info(
+                "The '%s' handler handled (matching %d%%) the following message: '%s'",
+                handler.__class__.__name__,
+                int(score * 100),
+                message.content,
+            )
