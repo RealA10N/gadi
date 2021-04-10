@@ -44,6 +44,28 @@ class MessageHandlerUtils:
     )
 
     @classmethod
+    def highest_score(cls,
+                      message: str,
+                      possabilities: typing.Iterable[str]
+                      ) -> MessageScore:
+        """ Compares all given possabilities to the given message and returns
+        the highest comperesent score. Replaces '{keyword}' in each possibility
+        with each valid keyword. """
+
+        # Replace '{keyword}' with valid keywords
+        possabilities = set(
+            possability.replace('{keyword}', keyword)
+            for keyword in cls.VALID_KEYWORDS
+            for possability in possabilities
+        )
+
+        # Returns highest matching score
+        return max(
+            cls.levenshtein_score(message, possability)
+            for possability in possabilities
+        )
+
+    @classmethod
     def with_prefix(cls, message: str) -> bool:
         """ Recives the message as a string, and returns `True` if the message
         starts with the bot prefix. """
