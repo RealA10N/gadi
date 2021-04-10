@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import typing
 import random
 import itertools
+import re
 import discord
 
 import etgarbot.utils as utils
@@ -57,6 +58,9 @@ class BaseCommand(ABC):
                       require_keyword: typing.Union[bool, str] = 'prefix',
                       allow_word_rearrange: bool = False,
                       case_sensitive: bool = False,
+                      ignore_markdown: bool = True,
+                      ignore_mentions: bool = True,
+                      ignore_channel_mentions: bool = True,
                       ) -> MessageScore:
         """ Returns a floating score between 0 and 1 that indicates the how
         similar the message stored in the instance and the given one are. (0 - 
@@ -83,6 +87,16 @@ class BaseCommand(ABC):
             # compersation to lower case
             message = message.lower()
             compare_to = compare_to.lower()
+
+        if ignore_markdown:
+            message = discord.utils.remove_markdown(message)
+
+        if ignore_mentions:
+            message = re.sub(
+                r'<@(everyone|here|[!&]?[0-9]{17,20})>', '', message)
+
+        if ignore_channel_mentions:
+            message = re.sub(r'<#[0-9]{17,20}>', '', message)
 
         words_to_compare = tuple(compare_to.split())
         permutations = {words_to_compare}
