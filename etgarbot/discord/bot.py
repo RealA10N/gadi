@@ -25,8 +25,8 @@ class EtgarBot(discord.Client):
 
         handler: BaseMessageHandler = max(
             self.MessageHandlers,
-            key=lambda handler: handler.message_to_score()
+            key=lambda handler: handler.message_to_score(message)
         )
 
-        if handler.message_to_score() >= self.ScoreThreshold:
-            handler.message_handle(message)
+        if handler.message_to_score(message) >= self.ScoreThreshold:
+            await handler.message_handle(message)
