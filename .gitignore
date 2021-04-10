@@ -136,3 +136,11 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# Discord token
+token
+token.txt
+credential
+credential.txt
+credentials
+credentials.txt
