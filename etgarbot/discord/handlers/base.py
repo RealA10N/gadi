@@ -63,28 +63,6 @@ class MessageHandlerUtils:
     )
 
     @classmethod
-    def highest_score(cls,
-                      message: str,
-                      possabilities: typing.Iterable[str]
-                      ) -> MessageScore:
-        """ Compares all given possabilities to the given message and returns
-        the highest comperesent score. Replaces '{keyword}' in each possibility
-        with each valid keyword. """
-
-        # Replace '{keyword}' with valid keywords
-        possabilities = set(
-            possability.replace('{keyword}', keyword)
-            for keyword in cls.VALID_KEYWORDS
-            for possability in possabilities
-        )
-
-        # Returns highest matching score
-        return max(
-            cls.levenshtein_score(message, possability)
-            for possability in possabilities
-        )
-
-    @classmethod
     def with_prefix(cls, message: str) -> bool:
         """ Recives the message as a string, and returns `True` if the message
         starts with the bot prefix. """
@@ -108,40 +86,3 @@ class MessageHandlerUtils:
     @classmethod
     def union_possabilities(cls, *possabilities: typing.Iterable[set]) -> set:
         return possabilities[0].union(*possabilities[1:])
-
-    @classmethod
-    def levenshtein_distance(cls, s1: str, s2: str) -> int:
-        """ Returns the edit distance between the two given strings. """
-
-        if min(len(s1), len(s2)) == 0:
-            return max(len(s1), len(s2))
-
-        previous_row = range(len(s2) + 1)  # The 'zero' row
-
-        for i, c1 in enumerate(s1):
-            current_row = [i + 1]
-
-            for j, c2 in enumerate(s2):
-
-                insertions = previous_row[j + 1] + 1
-                deletions = current_row[j] + 1
-                substitutions = previous_row[j] + (c1 != c2)
-
-                current_row.append(min(insertions, deletions, substitutions))
-            previous_row = current_row
-
-        return current_row[-1]
-
-    @classmethod
-    def levenshtein_score(cls, s1: str, s2: str) -> MessageScore:
-        """ Returns a floating number between 0 and 1. If the number is 0,
-        The two given strings are totally different. However, if the returned
-        number is 1, the two given strings the the same. """
-
-        max_distance = max(len(s1), len(s2))
-        if max_distance == 0:
-            # Special case: if both strings are empty (length zero).
-            return 0
-
-        distance = cls.levenshtein_distance(s1, s2)
-        return (max_distance - distance) / max_distance
