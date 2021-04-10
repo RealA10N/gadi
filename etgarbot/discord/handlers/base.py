@@ -13,10 +13,12 @@ class BaseCommand(ABC):
     _message: discord.Message
     score: MessageScore
 
+    @abstractmethod
     async def message_handle(self,) -> None:
         """ Respones to the message saved in the `_message` property. It can
         be, for example, a replay, a direct message, or a reaction. """
 
+    @abstractmethod
     def calculate_score(self,) -> MessageScore:
         """ Recives a message instance, and returns a score between 0 and 1.
         When the score is 1 (integer), it is guaranteed that the
@@ -27,11 +29,13 @@ class BaseCommand(ABC):
         automatically pick the message that has the top score and will call
         `message_handle` on that instance. """
 
+    @abstractmethod
     def short_description(self,) -> str:
         """ Returns a short description that describes the current message
         handler. This is used and displayed, for example, when using the 'help'
         command. """
 
+    @abstractmethod
     def long_description(self,) -> str:
         """ Returns a long description that describes the current message
         handler. This is used and displayed, for example, when using the 'help'
