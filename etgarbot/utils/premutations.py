@@ -28,3 +28,20 @@ def add_to_permutations(permutations: typing.Set[tuple],
             result.add(tuple(new))
 
     return result
+
+
+def union_permutation_sets(*sets: set) -> set:
+    """ Recives multiple sets of permutations, and preformes the
+    union operation between them all. """
+
+    if not sets:
+        # If no sets are provided, returns an empty set
+        return set()
+
+    cur_set, sets = sets[0], list(sets[1:])
+
+    # Union all sets until nothing left
+    while sets:
+        cur_set |= sets.pop()
+
+    return cur_set
