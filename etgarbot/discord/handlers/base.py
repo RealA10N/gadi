@@ -38,7 +38,7 @@ class MessageHandlerUtils:
     """ A collection of static methods that are used in different message
     handlers in the bot. """
 
-    VALID_PREFIXES = (
+    VALID_KEYWORDS = (
         "גדי",
         "gadi",
     )
@@ -49,5 +49,5 @@ class MessageHandlerUtils:
         starts with the bot prefix. """
 
         return any(message.lower().startswith(prefix.lower() + whitespace)
-                   for prefix in cls.VALID_PREFIXES
+                   for prefix in cls.VALID_KEYWORDS
                    for whitespace in string.whitespace)
