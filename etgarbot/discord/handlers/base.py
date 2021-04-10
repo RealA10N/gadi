@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 import typing
 import string
 import itertools
@@ -8,13 +8,16 @@ import discord
 MessageScore = typing.Union[float, int, ]
 
 
-class BaseMessageHandler(ABC):
+class BaseCommand(ABC):
 
-    async def message_handle(self, message: discord.Message) -> None:
-        """ Recives a message instance and handles it (for example, with
-        another response message from the bot). """
+    _message: discord.Message
+    score: MessageScore
 
-    def message_to_score(self, message: discord.Message) -> MessageScore:
+    async def message_handle(self,) -> None:
+        """ Respones to the message saved in the `_message` property. It can
+        be, for example, a replay, a direct message, or a reaction. """
+
+    def calculate_score(self,) -> MessageScore:
         """ Recives a message instance, and returns a score between 0 and 1.
         When the score is 1 (integer), it is guaranteed that the
         `message_handle` method will be called with the given message.
@@ -33,6 +36,17 @@ class BaseMessageHandler(ABC):
         """ Returns a long description that describes the current message
         handler. This is used and displayed, for example, when using the 'help'
         command. """
+
+
+class BaseMessageHandler(ABC):
+    """ A message handler contains a group of commands that work together to serve
+    similar purposes and that relay on each other. """
+
+    def message_to_command(self,
+                           message: discord.Message
+                           ) -> typing.Optional[BaseCommand]:
+        """ Recives a message instance, and returns a command instance that
+        already contains and wraps the message instance. """
 
 
 class MessageHandlerUtils:
