@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import typing
+import random
 import itertools
 import discord
 
@@ -113,6 +114,24 @@ class BaseCommand(ABC):
             utils.levenshtein_score(message, ' '.join(permutation))
             for permutation in permutations
         )
+
+    async def _reply(self, message: str, *args, **kwargs) -> None:
+        """ Sends the given message in the same channel that the message that
+        is saved in the instance is sent in. """
+
+        channel = self._message.channel
+        await channel.send(message, *args, **kwargs)
+
+    async def _random_reply(self,
+                            messages: typing.List[str],
+                            *args, **kwargs) -> None:
+        """ Selects one random message from the given messages list, and
+        sends the given message in the same channel that the message that is
+        saved in the instance is sent in. """
+
+        message = random.choice(messages)
+        await self._reply(message, *args, **kwargs)
+
 
 class BaseMessageHandler(ABC):
     """ A message handler contains a group of commands that work together to serve
