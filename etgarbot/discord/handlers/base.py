@@ -61,6 +61,7 @@ class BaseCommand(ABC):
                       ignore_markdown: bool = True,
                       ignore_mentions: bool = True,
                       ignore_channel_mentions: bool = True,
+                      ignore_whitespaces: bool = True,
                       ) -> MessageScore:
         """ Returns a floating score between 0 and 1 that indicates the how
         similar the message stored in the instance and the given one are. (0 - 
@@ -79,14 +80,7 @@ class BaseCommand(ABC):
             takes the highest score. If `False`, only compares the given string.
         """
 
-        # Handeling the `case_sensative` argument
-
         message = self._message.content
-        if not case_sensitive:
-            # If not case sensitive, converts every string involved in the
-            # compersation to lower case
-            message = message.lower()
-            compare_to = compare_to.lower()
 
         if ignore_markdown:
             message = discord.utils.remove_markdown(message)
@@ -97,6 +91,18 @@ class BaseCommand(ABC):
 
         if ignore_channel_mentions:
             message = re.sub(r'<#[0-9]{17,20}>', '', message)
+
+        # Remove duplicate whitespaces
+        if ignore_whitespaces:
+            message = ' '.join(message.split())
+
+        # Handeling the `case_sensative` argument
+
+        if not case_sensitive:
+            # If not case sensitive, converts every string involved in the
+            # compersation to lower case
+            message = message.lower()
+            compare_to = compare_to.lower()
 
         words_to_compare = tuple(compare_to.split())
         permutations = {words_to_compare}
