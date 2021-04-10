@@ -2,7 +2,7 @@ import typing
 import logging
 import discord
 
-from .handlers.base import BaseMessageHandler
+from .handlers.base import BaseMessageHandler, BaseCommand
 
 logger = logging.getLogger(__name__)
 
@@ -26,18 +26,19 @@ class EtgarBot(discord.Client):
         if message.author == self.user:
             return  # If message sent by the bot itself, exits the function.
 
-        handler: BaseMessageHandler = max(
-            self.MessageHandlers,
-            key=lambda handler: handler.message_to_score(message)
+        command: BaseCommand = max((
+            handler.message_to_command(message)
+            for handler in self.MessageHandlers
+        ),
+            key=lambda command: command.score
         )
 
-        score = handler.message_to_score(message)
-        if score >= self.ScoreThreshold:
-            await handler.message_handle(message)
+        if command.score >= self.ScoreThreshold:
+            await command.message_handle()
 
             logger.info(
-                "The '%s' handler handled (matching %d%%) the following message: '%s'",
-                handler.__class__.__name__,
-                int(score * 100),
+                "The '%s' command class (matching %d%%) handled the following message: '%s'",
+                command.__class__.__name__,
+                int(command.score * 100),
                 message.content,
             )
