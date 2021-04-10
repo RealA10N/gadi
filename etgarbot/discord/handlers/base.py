@@ -1,7 +1,8 @@
-import typing
 from abc import ABC
-import discord
+import typing
 import string
+import itertools
+import discord
 
 # - - - Typing hints - - - #
 MessageScore = typing.Union[float, int, ]
@@ -73,6 +74,22 @@ class MessageHandlerUtils:
         return any(message.lower().startswith(prefix.lower() + whitespace)
                    for prefix in cls.VALID_KEYWORDS
                    for whitespace in string.whitespace)
+
+    @classmethod
+    def rearrange_words(cls, s: str) -> typing.Set[str]:
+        """ Recives a string and returns an iterable that yields strings
+        containing all of the possible word rearrangements in the given
+        string. """
+
+        words = s.split()
+        return set(
+            ' '.join(permutation)
+            for permutation in itertools.permutations(words)
+        )
+
+    @classmethod
+    def union_possabilities(cls, *possabilities: typing.Iterable[set]) -> set:
+        return possabilities[0].union(*possabilities[1:])
 
     @classmethod
     def levenshtein_distance(cls, s1: str, s2: str) -> int:
