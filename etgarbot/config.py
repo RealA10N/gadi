@@ -1,5 +1,6 @@
 import os
 import logging
+import yaml
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +37,20 @@ class Config:
             raise ConfigDirectoryNotFoundError(
                 "Configure directory is not found or some configuration files are missing")
 
+        self._folder = config_folder_path
+        self._content = dict()
+        self.load_content()
+
+    def load_content(self,) -> None:
+        """ Opens the configuration files one by one, and loads the contents. """
+
+        filename_to_path = lambda name: os.path.join(
+            self._folder, name + self.FILES_EXTENTION)
+
+        for filename in self.REQUIRED_FILES:
+            with open(filename_to_path(filename)) as file:
+                self._content[filename] = yaml.full_load(file)
+
     @classmethod
     def is_valid_config_folder(cls, path: str) -> bool:
         """ Recives a path to a folder, and returns `True` only if the given
@@ -48,6 +63,15 @@ class Config:
             os.path.isfile(os.path.join(path, file + cls.FILES_EXTENTION))
             for file in cls.REQUIRED_FILES
         )
+
+    def get(self, *args):
+        """ Recives a combination of strings that represent a configuration,
+        and returns the configuration data. """
+
+        data = self._content
+        for arg in args:
+            data = data[arg]
+        return data
 
 
 class ConfigDirectoryNotFoundError(FileNotFoundError):
