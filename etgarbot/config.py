@@ -29,8 +29,7 @@ class Config:
         config_folder_path = next((
             element for element in options_for_folder
             if element is not None
-            and self.is_valid_config_folder(element)),
-            default=None
+            and self.is_valid_config_folder(element))
         )
 
         if config_folder_path is None:
