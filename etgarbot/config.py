@@ -9,8 +9,10 @@ class Config:
     data is provided, and lets the module use the data in the files. """
 
     REQUIRED_FILES = (
-        'token.yml',
+        'token',
     )
+
+    FILES_EXTENTION = '.yml'
 
     def __init__(self, config_folder_path: str = None):
         """ Recives the path to the configurations folder, and loads the data
@@ -44,7 +46,7 @@ class Config:
             return False
 
         return all(
-            os.path.isfile(os.path.join(path, file))
+            os.path.isfile(os.path.join(path, file + cls.FILES_EXTENTION))
             for file in cls.REQUIRED_FILES
         )
 
