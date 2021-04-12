@@ -135,12 +135,26 @@ class BaseCommand(ABC):
             for permutation in permutations
         )
 
+    def _is_author_mod(self,) -> bool:
+        """ Returns True if the author of the message is a moderator in
+        the server. """
+        return self._message.author.guild_permissions.manage_guild()
+
+    def _is_author_admin(self,) -> bool:
+        """ Returns True if the user is an administrator in the server. """
+        author: discord.Member = self._message.author
+        return author.guild_permissions.administrator()
+
     async def _reply(self, message: str, *args, **kwargs) -> None:
         """ Sends the given message in the same channel that the message that
         is saved in the instance is sent in. """
 
         channel = self._message.channel
-        await channel.send(message, *args, **kwargs)
+
+        await channel.send(message, *args, **kwargs | {
+            "reference": self._message,
+            "mention_author": False,
+        })
 
     async def _random_reply(self,
                             messages: typing.List[str],
