@@ -48,7 +48,7 @@ class Config:
             self._folder, name + self.FILES_EXTENTION)
 
         for filename in self.REQUIRED_FILES:
-            with open(filename_to_path(filename)) as file:
+            with open(filename_to_path(filename), encoding='utf8') as file:
                 self._content[filename] = yaml.full_load(file)
 
     @classmethod
