@@ -5,7 +5,7 @@ import itertools
 import re
 import discord
 
-import etgarbot.utils as utils
+import gadi.utils as utils
 
 # - - - Typing hints - - - #
 MessageScore = typing.Union[float, int, ]

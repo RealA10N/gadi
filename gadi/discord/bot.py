@@ -7,7 +7,7 @@ from .handlers.base import BaseMessageHandler, BaseCommand
 logger = logging.getLogger(__name__)
 
 
-class EtgarBot(discord.Client):
+class GadiBot(discord.Client):
 
     MessageHandlers: typing.Tuple[BaseMessageHandler] = (
         # Slowly, handlers will add up here!
