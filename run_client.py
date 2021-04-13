@@ -1,9 +1,8 @@
 import logging
-from gadi import GadiBot
-from gadi.token import get_token
+from gadi import GadiBot, Config
 
 
-def config_logging():
+def configure_logging():
     logger = logging.getLogger('gadi')
     stream = logging.StreamHandler()
 
@@ -12,9 +11,21 @@ def config_logging():
 
     logger.addHandler(stream)
 
+    return logger
+
+
+def run_client(logger: logging.Logger = logging.getLogger()):
+    config = Config()
+    token = config.get_safely('token')
+
+    if token is None:
+        logger.error(
+            'A Discord bot token is not provided. Paste your token inside ./config/token.yml')
+
+    else:
+        GadiBot(config=config).run(token)
+
 
 if __name__ == "__main__":
-    config_logging()
-    token = get_token()
-    if token is not None:
-        GadiBot().run(token)
+    logger = configure_logging()
+    run_client(logger)
