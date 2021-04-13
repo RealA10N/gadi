@@ -66,12 +66,23 @@ class Config:
 
     def get(self, *args):
         """ Recives a combination of strings that represent a configuration,
-        and returns the configuration data. """
+        and returns the configuration data. If the configuration is not
+        found, a KeyError is thrown. """
 
         data = self._content
         for arg in args:
             data = data[arg]
         return data
+
+    def get_safely(self, *args, default=None):
+        """ Recives a combination of strings that represent a configuration,
+        and returns the configuration data. If the a configuration is not
+        found, returns the deafult value. """
+
+        try:
+            self.get(*args)
+        except KeyError:
+            return default
 
 
 class ConfigDirectoryNotFoundError(FileNotFoundError):
