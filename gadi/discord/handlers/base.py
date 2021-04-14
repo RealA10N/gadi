@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 import typing
-import random
 import itertools
 import re
 import discord
