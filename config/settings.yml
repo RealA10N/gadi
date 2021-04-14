@@ -1,0 +1,26 @@
+# Each message that the bot detects (in any channel) is given multiple scored
+# from different event handlers. The response that is given the highest score
+# is than selected, only if the score is higher then the threshold.
+# The score is a floating number between 0 and 1. The value that is recommended
+# is somewhere between 0.6 up to 0.9
+
+score-threshold: 0.7
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
+
+# WakeWords are keywords that most of the commands of the bot require for them
+# to actually trigger. Sometimes however, a command can be triggered by the bot
+# while including none of the wake-words. The exact behavior depends on the
+# implementation of each and every command.
+
+wake-words:
+  - Gadi
+  - Gad
+  - Gad M
+  - Gad M. Landau
+  - Landau
+  - גדי
+  - גד
+  - גדי לנדאו
+  - לנדאו
+  - גד מנחם לנדאו
