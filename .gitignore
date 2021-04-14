@@ -139,12 +139,3 @@ cython_debug/
 
 # Editors
 .vscode/
-
-
-# Discord token
-token
-token.txt
-credential
-credential.txt
-credentials
-credentials.txt
