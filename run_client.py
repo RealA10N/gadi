@@ -23,6 +23,7 @@ def run_client(logger: logging.Logger = logging.getLogger()):
             'A Discord bot token is not provided. Paste your token inside ./config/token.yml')
 
     else:
+        logger.info('Loaded Discord bot token from ./config/token.yml')
         GadiBot(config=config).run(token)
 
 
