@@ -6,14 +6,19 @@ from .handlers.base import BaseMessageHandler, BaseCommand
 
 logger = logging.getLogger(__name__)
 
+MessageHandlers = (
+)
+
 
 class GadiBot(discord.Client):
 
-    MessageHandlers: typing.Tuple[BaseMessageHandler] = (
-        # Slowly, handlers will add up here!
-    )
-
-    ScoreThreshold = 0.7
+    def __init__(self, config, *args, **options):
+        super().__init__(*args, **options)
+        self._config = config
+        self._handlers = {
+            Handler(config)
+            for Handler in MessageHandlers
+        }
 
     async def on_ready(self,) -> None:
         """ Called when the bot finishes to boot up. """
@@ -28,12 +33,17 @@ class GadiBot(discord.Client):
 
         command: BaseCommand = max((
             handler.message_to_command(message)
-            for handler in self.MessageHandlers
+            for handler in self._handlers
         ),
             key=lambda command: command.score
         )
 
-        if command.score >= self.ScoreThreshold:
+        threshold = self._config.get_safely(
+            'settings', 'score-threshold',
+            default=0.7,
+        )
+
+        if command.score >= threshold:
             await command.message_handle()
 
             logger.info(

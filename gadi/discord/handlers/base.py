@@ -5,6 +5,7 @@ import re
 import discord
 
 import gadi.utils as utils
+from ...config import Config
 
 # - - - Typing hints - - - #
 MessageScore = typing.Union[float, int, ]
@@ -20,8 +21,9 @@ class BaseCommand(ABC):
         'gadi',
     )
 
-    def __init__(self, message: discord.Message):
+    def __init__(self, message: discord.Message, config: Config):
         self._message = message
+        self._config = config
         self.score = self.calculate_score()
 
     @abstractmethod
@@ -141,6 +143,9 @@ class BaseMessageHandler(ABC):
 
     COMMANDS: tuple     # will contain class objects (not instances).
 
+    def __init__(self, config: Config):
+        self._config = config
+
     def message_to_command(self,
                            message: discord.Message
                            ) -> typing.Optional[BaseCommand]:
@@ -149,7 +154,7 @@ class BaseMessageHandler(ABC):
         that best matches the message. """
 
         return max((
-            Command(message)
+            Command(message, self._config)
             for Command in self.COMMANDS
         ),
             key=lambda command: command.score,
