@@ -80,7 +80,7 @@ class Config:
         found, returns the deafult value. """
 
         try:
-            self.get(*args)
+            return self.get(*args)
         except KeyError:
             return default
 
