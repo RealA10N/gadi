@@ -44,12 +44,14 @@ class Config:
     def load_content(self,) -> None:
         """ Opens the configuration files one by one, and loads the contents. """
 
-        filename_to_path = lambda name: os.path.join(
-            self._folder, name + self.FILES_EXTENTION)
+        for filename in os.listdir(self._folder):
+            filepath = os.path.join(self._folder, filename)
+            name, ext = os.path.splitext(filename)
 
-        for filename in self.REQUIRED_FILES:
-            with open(filename_to_path(filename), encoding='utf8') as file:
-                self._content[filename] = yaml.full_load(file)
+            if os.path.isfile(filepath) and ext == self.FILES_EXTENTION:
+                # Only if a valid configuration file, open it.
+                with open(filepath, encoding='utf8') as file:
+                    self._content[name] = yaml.full_load(file)
 
     @classmethod
     def is_valid_config_folder(cls, path: str) -> bool:
