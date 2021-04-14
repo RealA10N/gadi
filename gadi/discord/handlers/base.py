@@ -42,18 +42,6 @@ class BaseCommand(ABC):
         automatically pick the message that has the top score and will call
         `message_handle` on that instance. """
 
-    @abstractmethod
-    def short_description(self,) -> str:
-        """ Returns a short description that describes the current message
-        handler. This is used and displayed, for example, when using the 'help'
-        command. """
-
-    @abstractmethod
-    def long_description(self,) -> str:
-        """ Returns a long description that describes the current message
-        handler. This is used and displayed, for example, when using the 'help'
-        command. """
-
     def compare_score(self,
                       compare_to: str,
                       require_keyword: typing.Union[bool, str] = 'prefix',
